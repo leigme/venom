@@ -1,9 +1,21 @@
 package cmd
 
-import "github.com/spf13/cobra"
+import (
+	"fmt"
+	"github.com/leigme/venom/tool"
+	"github.com/spf13/cobra"
+)
 
 func init() {
-	rootCmd.AddCommand(findCommand)
+	AddCommand(&FindCommand{}, CommandWithShort("find"))
 }
 
-var findCommand = &cobra.Command{Use: "find"}
+type FindCommand struct {
+}
+
+func (fc *FindCommand) Execute() Exec {
+	return func(cmd *cobra.Command, args []string) {
+		v := tool.NewVmd()
+		fmt.Println(v.Execute("ifconfig"))
+	}
+}

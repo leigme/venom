@@ -4,13 +4,10 @@ package cmd
 Copyright © 2023 NAME HERE <leigme@gmail.com>
 */
 import (
-	"fmt"
+	"github.com/leigme/venom/tool"
 	"github.com/spf13/cobra"
 	"log"
 	"os"
-	"path/filepath"
-	"runtime"
-	"strings"
 )
 
 // rootCmd represents the base command when called without any subcommands
@@ -38,6 +35,8 @@ func Execute() {
 }
 
 func init() {
+	// 初始化工作目录
+	initWorkDir()
 	// Here you will define your flags and configuration settings.
 	// Cobra supports persistent flags, which, if defined here,
 	// will be global for your application.
@@ -49,25 +48,9 @@ func init() {
 	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
 
-func InitWorkDir() {
-	executable, err := os.Executable()
-	if err != nil {
-		log.Fatal(err)
-	}
-	appName := trimSuffix(executable)
-	workDir := fmt.Sprint(".", filepath.Base(appName))
-	if userHome, err := os.UserHomeDir(); err == nil {
-		workDir = filepath.Join(userHome, workDir)
-	}
-	err = os.MkdirAll(workDir, os.ModePerm)
+func initWorkDir() {
+	err := os.MkdirAll(tool.GetWorkDir(), os.ModePerm)
 	if err != nil {
 		log.Fatalf("mkdir work dir is err: %s\n", err)
 	}
-}
-
-func trimSuffix(filename string) string {
-	if strings.EqualFold(runtime.GOOS, "windows") {
-		filename = strings.TrimSuffix(filename, ".exe")
-	}
-	return filename
 }

@@ -6,6 +6,7 @@ require (
 	github.com/axgle/mahonia v0.0.0-20180208002826-3358181d7394
 	github.com/go-ini/ini v1.67.0
 	github.com/gocolly/colly v1.2.0
+	github.com/leigme/loki v0.0.3
 	github.com/spf13/cobra v1.6.1
 	golang.org/x/text v0.6.0
 )

@@ -5,7 +5,8 @@ import (
 	"fmt"
 	"github.com/axgle/mahonia"
 	"github.com/gocolly/colly"
-	"github.com/leigme/venom/tool"
+	"github.com/leigme/loki/app"
+	"github.com/leigme/loki/file"
 	"github.com/spf13/cobra"
 	"log"
 	"net/url"
@@ -57,7 +58,10 @@ func (sc *SpiderCommand) Execute() Exec {
 		if err != nil {
 			log.Fatal(err)
 		}
-		tool.Bytes2File(data, filepath.Join(tool.GetWorkDir(), "spider", "data.json"))
+		err = file.Create(filepath.Join(app.WorkDir(), "spider", "data.json"), data)
+		if err != nil {
+			log.Fatal(err)
+		}
 	}
 }
 

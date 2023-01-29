@@ -4,7 +4,8 @@ import (
 	"errors"
 	"fmt"
 	"github.com/go-ini/ini"
-	"github.com/leigme/venom/tool"
+	"github.com/leigme/loki/app"
+	"github.com/leigme/loki/file"
 	"github.com/spf13/cobra"
 	"log"
 	"os"
@@ -49,7 +50,7 @@ func (rc *RenameCommand) Execute() Exec {
 			showCacheRegular()
 			return
 		}
-		if !tool.FileExist(rc.params[fileDir]) {
+		if !file.Exist(rc.params[fileDir]) {
 			log.Fatal("file dir is no exist")
 		}
 		if strings.EqualFold(rc.params[regular], "") {
@@ -73,7 +74,7 @@ func (rc *RenameCommand) Execute() Exec {
 设置缓存正则
 */
 func setCacheRegular(section, key, value string) {
-	filename := filepath.Join(tool.GetWorkDir(), renameCacheDir, regularConfig)
+	filename := filepath.Join(app.WorkDir(), renameCacheDir, regularConfig)
 	cfg := ini.Empty()
 	defaultSection := cfg.Section(section)
 	_, err := defaultSection.NewKey(key, value)
@@ -90,8 +91,8 @@ func setCacheRegular(section, key, value string) {
 获取缓存正则
 */
 func getCacheRegular(section, fileDir string) (string, error) {
-	filename := filepath.Join(tool.GetWorkDir(), renameCacheDir, regularConfig)
-	if !tool.FileExist(filename) {
+	filename := filepath.Join(app.WorkDir(), renameCacheDir, regularConfig)
+	if !file.Exist(filename) {
 		return "", errors.New(fmt.Sprintf("%s is not exist\n", filename))
 	}
 	cfg, err := ini.Load(filename)
@@ -105,7 +106,7 @@ func getCacheRegular(section, fileDir string) (string, error) {
 显示缓存正则
 */
 func showCacheRegular() {
-	filename := filepath.Join(tool.GetWorkDir(), renameCacheDir, regularConfig)
+	filename := filepath.Join(app.WorkDir(), renameCacheDir, regularConfig)
 	cfg, err := ini.Load(filename)
 	if err != nil {
 		log.Fatal(err)

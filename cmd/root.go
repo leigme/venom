@@ -4,7 +4,7 @@ package cmd
 Copyright © 2023 NAME HERE <leigme@gmail.com>
 */
 import (
-	"github.com/leigme/venom/tool"
+	"github.com/leigme/loki/app"
 	"github.com/spf13/cobra"
 	"log"
 	"os"
@@ -49,7 +49,7 @@ func init() {
 }
 
 func initWorkDir() {
-	err := os.MkdirAll(tool.GetWorkDir(), os.ModePerm)
+	err := os.MkdirAll(app.WorkDir(), os.ModePerm)
 	if err != nil {
 		log.Fatalf("mkdir work dir is err: %s\n", err)
 	}

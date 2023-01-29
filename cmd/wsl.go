@@ -3,6 +3,8 @@ package cmd
 import (
 	"errors"
 	"fmt"
+	"github.com/leigme/loki/app"
+	"github.com/leigme/loki/file"
 	"github.com/leigme/venom/tool"
 	"github.com/spf13/cobra"
 	"log"
@@ -53,19 +55,19 @@ func (wc *WslCommand) Execute() Exec {
 
 func createDefaultExportFile(linux string) string {
 	filename := fmt.Sprintf("%s_%s.tar", linux, time.Now().Format("200601021504"))
-	if err := tool.CreateDir(filepath.Join(tool.GetWorkDir(), wslWorkDir, wslBackup)); err == nil {
-		filename = filepath.Join(tool.GetWorkDir(), wslWorkDir, wslBackup, filename)
+	if err := file.CreateDir(filepath.Join(app.WorkDir(), wslWorkDir, wslBackup)); err == nil {
+		filename = filepath.Join(app.WorkDir(), wslWorkDir, wslBackup, filename)
 	}
 	return filename
 }
 
 func searchDefaultExportFile(linux string) (string, error) {
-	path := filepath.Join(tool.GetWorkDir(), wslWorkDir, wslBackup)
-	if !tool.FileExist(path) {
+	path := filepath.Join(app.WorkDir(), wslWorkDir, wslBackup)
+	if !file.Exist(path) {
 		err := errors.New(fmt.Sprintf("%s path is not exist", path))
 		return "", err
 	}
-	var fl tool.FileList
+	var fl file.ListWithTime
 	fs, err := os.ReadDir(path)
 	if err != nil {
 		return "", err
@@ -92,7 +94,7 @@ func generateWslCmd(params map[wslParam]string) string {
 		return generateExportCmd(params[wslName], params[wslFile])
 	case "import":
 		if strings.EqualFold(params[wslDir], "") {
-			params[wslDir] = filepath.Join(tool.GetWorkDir(), wslWorkDir)
+			params[wslDir] = filepath.Join(app.WorkDir(), wslWorkDir)
 		}
 		if strings.EqualFold(params[wslFile], "") {
 			fp, err := searchDefaultExportFile(params[wslName])

@@ -1,7 +1,8 @@
 package cmd
 
 import (
-	"github.com/leigme/venom/tool"
+	"github.com/leigme/loki/app"
+	"github.com/leigme/loki/file"
 	"github.com/spf13/cobra"
 	"log"
 	"path/filepath"
@@ -29,7 +30,7 @@ type Option func(option *CommandOption)
 
 func NewCommand(e Exec, ops ...Option) *cobra.Command {
 	cmdName := getCommandName(3)
-	err := tool.CreateDir(filepath.Join(tool.GetWorkDir(), cmdName))
+	err := file.CreateDir(filepath.Join(app.WorkDir(), cmdName))
 	if err != nil {
 		log.Fatal(err)
 	}

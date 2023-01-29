@@ -3,7 +3,7 @@ package cmd
 import (
 	"bytes"
 	"fmt"
-	"github.com/leigme/venom/tool"
+	"github.com/leigme/loki/file"
 	"github.com/spf13/cobra"
 	"io"
 	"log"
@@ -20,7 +20,7 @@ const (
 
 func init() {
 	AddCommand(&UploadCommand{
-		HttpClient: &http.Client{Timeout: 3 * time.Second},
+		HttpClient: &http.Client{Timeout: 10 * time.Minute},
 	})
 }
 
@@ -58,59 +58,49 @@ func (uc *UploadCommand) UploadFile(filename, url string) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	srcMD5, err := tool.FileMD5(filename)
+	srcMD5, err := file.Md5(filename)
 	if err != nil {
 		log.Fatalf("sum file: %s, md5 err: %s\n", filename, err)
 	}
-
 	log.Println(srcMD5)
-
-	file, err := os.Open(filename)
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer file.Close()
 
 	body := new(bytes.Buffer)
 	writer := multipart.NewWriter(body)
 
 	formFile, err := writer.CreateFormFile("file", fi.Name())
-
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	_, err = io.Copy(formFile, file)
+	srcFile, err := os.Open(filename)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer srcFile.Close()
 
+	_, err = io.Copy(formFile, srcFile)
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	err = writer.WriteField("md5", srcMD5)
-
 	if err != nil {
 		log.Fatal(err)
 	}
-
 	err = writer.Close()
 	if err != nil {
 		log.Fatal(err)
 	}
-
 	req, err := http.NewRequest("POST", url, body)
-
 	if err != nil {
 		log.Fatal(err)
 	}
-
 	req.Header.Add("Content-Type", writer.FormDataContentType())
-
 	resp, err := uc.HttpClient.Do(req)
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer resp.Body.Close()
-
 	content, err := io.ReadAll(resp.Body)
 	if err != nil {
 		log.Fatal(err)

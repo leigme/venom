@@ -6,6 +6,7 @@ import (
 	"github.com/axgle/mahonia"
 	"github.com/gocolly/colly"
 	"github.com/leigme/loki/app"
+	loki "github.com/leigme/loki/cobra"
 	"github.com/leigme/loki/file"
 	"github.com/spf13/cobra"
 	"log"
@@ -31,7 +32,7 @@ func init() {
 		C:            c,
 	}
 	sc.SpiderParser[Www6vhaoNet] = Parse6vhao
-	AddCommand(sc)
+	loki.Add(rootCmd, sc)
 }
 
 type SpiderInterface interface {
@@ -47,7 +48,7 @@ type SpiderParse func(url string, c *colly.Collector) map[string]string
 
 // http://www.6vhao.net/dlz/2023-01-15/44682.html
 
-func (sc *SpiderCommand) Execute() Exec {
+func (sc *SpiderCommand) Execute() loki.Exec {
 	return func(cmd *cobra.Command, args []string) {
 		if len(args) <= 0 {
 			log.Fatal("inputUrl is nil")

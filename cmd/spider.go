@@ -58,6 +58,11 @@ func (sc *SpiderCommand) Execute() Exec {
 		if err != nil {
 			log.Fatal(err)
 		}
+		for k, v := range result {
+			if strings.Contains(k, ".2160p.") {
+				fmt.Println(v)
+			}
+		}
 		err = file.Create(filepath.Join(app.WorkDir(), "spider", "data.json"), data)
 		if err != nil {
 			log.Fatal(err)

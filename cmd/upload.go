@@ -3,6 +3,7 @@ package cmd
 import (
 	"bytes"
 	"fmt"
+	loki "github.com/leigme/loki/cobra"
 	"github.com/leigme/loki/file"
 	"github.com/spf13/cobra"
 	"io"
@@ -19,7 +20,7 @@ const (
 )
 
 func init() {
-	AddCommand(&UploadCommand{
+	loki.Add(rootCmd, &UploadCommand{
 		HttpClient: &http.Client{Timeout: 10 * time.Minute},
 	})
 }
@@ -28,7 +29,7 @@ type UploadCommand struct {
 	HttpClient *http.Client
 }
 
-func (uc *UploadCommand) Execute() Exec {
+func (uc *UploadCommand) Execute() loki.Exec {
 	return func(cmd *cobra.Command, args []string) {
 		if len(args) != 2 {
 			log.Fatal("filename and url is not nil")

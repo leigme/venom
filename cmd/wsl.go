@@ -4,8 +4,9 @@ import (
 	"errors"
 	"fmt"
 	"github.com/leigme/loki/app"
+	loki "github.com/leigme/loki/cobra"
 	"github.com/leigme/loki/file"
-	"github.com/leigme/venom/tool"
+	"github.com/leigme/loki/shell"
 	"github.com/spf13/cobra"
 	"log"
 	"os"
@@ -25,7 +26,7 @@ const (
 )
 
 func init() {
-	AddCommand(&WslCommand{params: make(map[wslParam]string, 0)}, CommandWithLong(""))
+	loki.Add(rootCmd, &WslCommand{params: make(map[wslParam]string, 0)})
 }
 
 const (
@@ -37,7 +38,7 @@ type WslCommand struct {
 	params map[wslParam]string
 }
 
-func (wc *WslCommand) Execute() Exec {
+func (wc *WslCommand) Execute() loki.Exec {
 	return func(cmd *cobra.Command, args []string) {
 		for i, v := range args {
 			wc.params[wslParam(i)] = v
@@ -48,8 +49,8 @@ func (wc *WslCommand) Execute() Exec {
 			return
 		}
 		fmt.Println(command)
-		v := tool.NewVmd()
-		fmt.Println(v.Execute(command))
+		sh := shell.New()
+		fmt.Println(sh.Exe(command))
 	}
 }
 

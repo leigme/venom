@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/go-ini/ini"
 	"github.com/leigme/loki/app"
+	loki "github.com/leigme/loki/cobra"
 	"github.com/leigme/loki/file"
 	"github.com/spf13/cobra"
 	"log"
@@ -31,14 +32,14 @@ const (
 )
 
 func init() {
-	AddCommand(&RenameCommand{params: make(map[renameParam]string, 0)})
+	loki.Add(rootCmd, &RenameCommand{params: make(map[renameParam]string, 0)})
 }
 
 type RenameCommand struct {
 	params map[renameParam]string
 }
 
-func (rc *RenameCommand) Execute() Exec {
+func (rc *RenameCommand) Execute() loki.Exec {
 	return func(cmd *cobra.Command, args []string) {
 		rc.params[fileDir] = regularConfig
 		rc.params[suffixes] = "*"
